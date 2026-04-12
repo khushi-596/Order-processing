@@ -142,7 +142,7 @@ async function loadDashboard() {
           <div class="recent-order-left">
             <div class="order-avatar">${o.orderID}</div>
             <div class="recent-order-info">
-              <span class="recent-order-id">#${o.orderID}</span>
+              <span class="recent-order-id" style="font-weight:600; color:var(--gray-900);">#${o.orderID} — ${o.itemName}</span>
               <span class="recent-order-loc">${o.locationName}</span>
             </div>
           </div>
@@ -219,6 +219,7 @@ async function loadOrders() {
       tbody.innerHTML = orders.map(o => `
         <tr>
           <td class="order-id-cell">#${o.orderID}</td>
+          <td><strong>${o.itemName}</strong></td>
           <td>${o.locationName}</td>
           <td>
             <span style="display:inline-flex;align-items:center;gap:4px;">
@@ -282,6 +283,10 @@ async function viewOrder(id) {
 
     document.getElementById('modal-title').textContent = `Order #${order.orderID}`;
     document.getElementById('modal-body').innerHTML = `
+      <div class="modal-detail-row" style="margin-bottom: 12px; background: var(--gray-50); padding: 8px; border-radius: 6px;">
+        <span class="modal-detail-label">Items</span>
+        <span class="modal-detail-value" style="font-weight: 600; color:var(--primary-600);">${order.itemName}</span>
+      </div>
       <div class="modal-detail-row">
         <span class="modal-detail-label">Location</span>
         <span class="modal-detail-value">${order.locationName} (Zone ${order.location})</span>
@@ -465,6 +470,7 @@ async function submitOrder(e) {
 
   const body = {
     location: parseInt(locationRadio.value),
+    itemName: document.getElementById('order-item-name').value.trim(),
     urgency:  parseInt(document.getElementById('order-urgency').value),
     value:    parseFloat(document.getElementById('order-value').value),
     deadline: parseInt(document.getElementById('order-deadline').value)

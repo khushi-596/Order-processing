@@ -82,9 +82,12 @@ app.get('/api/orders/:id', (req, res) => {
 
 // POST /api/orders — Add new order
 app.post('/api/orders', (req, res) => {
-  const { location, urgency, value, deadline } = req.body;
+  const { location, itemName, urgency, value, deadline } = req.body;
 
-  // Validation (mirrors C++ validation)
+  // Validation
+  if (!itemName || itemName.trim() === '') {
+    return res.status(400).json({ error: 'Item name is required.' });
+  }
   if (!location || location < 1 || location > 11) {
     return res.status(400).json({ error: 'Invalid location! Must be between 1 and 11.' });
   }
@@ -109,8 +112,8 @@ app.post('/api/orders', (req, res) => {
 
   // Insert order
   const result = db.prepare(
-    'INSERT INTO orders (location, locationName, urgency, value, deadline, priority, status) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(location, loc.name, urgency, value, deadline, priority, 'Pending');
+    'INSERT INTO orders (location, locationName, itemName, urgency, value, deadline, priority, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(location, loc.name, itemName.trim(), urgency, value, deadline, priority, 'Pending');
 
   const newOrder = db.prepare('SELECT * FROM orders WHERE orderID = ?').get(result.lastInsertRowid);
   res.status(201).json(newOrder);

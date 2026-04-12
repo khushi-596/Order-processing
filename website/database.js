@@ -29,6 +29,7 @@ function initDatabase() {
       orderID       INTEGER PRIMARY KEY AUTOINCREMENT,
       location      INTEGER NOT NULL,
       locationName  TEXT NOT NULL,
+      itemName      TEXT NOT NULL,
       urgency       INTEGER NOT NULL,
       value         REAL NOT NULL,
       deadline      INTEGER NOT NULL,
@@ -101,7 +102,7 @@ function initDatabase() {
   const orderCount = db.prepare('SELECT COUNT(*) as cnt FROM orders').get().cnt;
   if (orderCount === 0) {
     // Insert and delete a dummy to create sqlite_sequence, then update it
-    db.exec(`INSERT INTO orders (location, locationName, urgency, value, deadline, priority, status) VALUES (1, 'init', 1, 1, 1, 0, 'init')`);
+    db.exec(`INSERT INTO orders (location, locationName, itemName, urgency, value, deadline, priority, status) VALUES (1, 'init', 'init', 1, 1, 1, 0, 'init')`);
     db.exec(`DELETE FROM orders`);
     db.exec(`UPDATE sqlite_sequence SET seq = 1000 WHERE name = 'orders'`);
   }
